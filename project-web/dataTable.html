@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<thead>
+    <tr>
+        <th>Nama</th>
+        <th>Tempat Lahir</th>
+        <th>Tanggal Lahir</th>
+        <th>Domisili</th>
+        <th>Email</th>
+        <th>Nomor Telepon</th>
+        <th>Alamat</th>
+        <th>Jenis Kelamin</th>
+        <th></th>
+    </tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+
+<!-- Formulir Pendaftaran -->
+<div id="formulir-pendaftaran" style="display: none;">
+    <form id="form-update">
+        <input type="hidden" id="id_mahasiswa" name="id">
+        <input type="text" id="nama" name="nama" placeholder="Nama"><br>
+        <input type="text" id="tempat_lahir" name="tempat_lahir" placeholder="Tempat Lahir"><br>
+        <input type="date" id="tanggal_lahir" name="tanggal_lahir"><br>
+        <input type="text" id="domisili" name="domisili" placeholder="Domisili"><br>
+        <input type="email" id="email" name="email" placeholder="Email"><br>
+        <input type="tel" id="phone" name="phone" placeholder="Nomor Telepon"><br>
+        <textarea id="alamat" name="alamat" placeholder="Alamat"></textarea><br>
+        <select id="jenis_kelamin" name="jenis_kelamin">
+            <option value="Laki-laki">Laki-laki</option>
+            <option value="Perempuan">Perempuan</option>
+        </select><br>
+        <button type="button" id="btn-update">Simpan Perubahan</button>
+    </form>
+</div>
+<script>
+    $(document).ready(function() {
+        $.ajax({
+            type: "GET",
+            url: "action_select_data.php",
+            success: function(response) {
+                const res = JSON.parse(response);
+                const daftar_mahasiswa = res.data;
+                for (let i = 0; i < daftar_mahasiswa.length; i++) {
+                    $("#tbody").append(
+                        "<tr id='tr-" + daftar_mahasiswa[i].id + "'>" +
+                        "<td>" + daftar_mahasiswa[i].nama + "</td>" +
+                        "<td>" + daftar_mahasiswa[i].tempat_lahir + "</td>" +
+                        "<td>" + daftar_mahasiswa[i].tanggal_lahir + "</td>" +
+                        "<td>" + daftar_mahasiswa[i].domisili + "</td>" +
+                        "<td>" + daftar_mahasiswa[i].email + "</td>" +
+                        "<td>" + daftar_mahasiswa[i].phone + "</td>" +
+                        "<td>" + daftar_mahasiswa[i].alamat + "</td>" +
+                        "<td>" + daftar_mahasiswa[i].jenis_kelamin + "</td>" +
+                        "<td>" +
+                        "<i class='fa-solid fa-eye'></i>" +
+                        "<i class='fa-solid fa-pencil' id='edit-id-" + daftar_mahasiswa[i].id + "'></i>" +
+                        "<i class='fa-solid fa-trash' id='delete-id-" + daftar_mahasiswa[i].id + "'></i></td></tr>"
+                    );
+
+                    $("#delete-id-" + daftar_mahasiswa[i].id).click(function() {
+                        $.ajax({
+                                type: "DELETE",
+                                url: "action_delete.php?id=" + id,
+                                success: function(response) {
+                                    $("#tr-" + id).remove();
+                                }
+                            });
+                        });
+
+                    $("#edit-id-" + daftar_mahasiswa[i].id).click(function() {
+                        $('#nama').val(daftar_mahasiswa[i].nama);
+                        $('#domisili').val(daftar_mahasiswa[i].domisili);
+                        $('#tempat_lahir').val(daftar_mahasiswa[i].tempat_lahir);
+                        $('#tanggal_lahir').val(daftar_mahasiswa[i].tanggal_lahir);
+                        $('#email').val(daftar_mahasiswa[i].email);
+                        $('#phone').val(daftar_mahasiswa[i].phone);
+                        $('#alamat').val(daftar_mahasiswa[i].alamat);
+                        $('#jenis_kelamin').val(daftar_mahasiswa[i].jenis_kelamin);
+                        <td><button class='edit-button' data-id='" + daftar_mahasiswa[i].id + "'>Edit</button></td>
+                        $('#formulir-pendaftaran').show();
+                        $('#table-container').hide();
+                    });
+                }
+            }
+        });
+    });
+</script>
